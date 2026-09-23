@@ -34,6 +34,16 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('company.companylistings');
         }
 
+         //if  admin then redirect on company listing page.
+        if (auth()->user()->role->name === Role::ADMIN) {
+            return redirect()->route('admin.dashboard');
+        }
+
+          //if  admin then redirect on company listing page.
+        if (auth()->user()->role->name === Role::MEMBER) {
+            return redirect()->route('member.dashboard');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

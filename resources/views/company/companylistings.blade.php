@@ -6,7 +6,17 @@
 </head>
 
 <body>
+   <!-- Logout -->
+    <form method="POST" action="{{ route('logout') }}" style="text-align: right; margin: 20px 70px 10px 0;">
+        @csrf
 
+        <button type="submit"
+            style="padding: 8px 15px; background: lightgray; color: red;
+            border: 1px solid gray; font-weight: bold; border-radius: 5px;
+            cursor: pointer;">
+            Logout
+        </button>
+    </form>
 
      <!-- Company -->
     <div>
@@ -14,6 +24,11 @@
             <a href="{{ route('companies.create') }}"
                 style="padding: 8px 15px; background: lightgray; color: blue;
               text-decoration: none; font-weight: bold; border-radius: 5px;">+ Add Company</a>
+        </div>
+        <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
+            <a href="{{ route('users.invite') }}"
+                style="padding: 8px 15px; background: lightgray; color: blue;
+              text-decoration: none; font-weight: bold; border-radius: 5px;">+ Invite User</a>
         </div>
         <h1 style="text-align: center;font-weight: bold;"><u>Companies Listing</u> </h1>
         <table border="1" cellpadding="10" style="color: black; width: 100%; border-collapse: collapse;border-color: black; margin-top: 20px;">
@@ -45,7 +60,7 @@
     </div>
 
     <!-- User -->
-     <div style="margin-top: 100px;">
+     <!-- <div style="margin-top: 100px;">
          <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
             <a href="{{ route('users.invite') }}"
                 style="padding: 8px 15px; background: lightgray; color: blue;
@@ -81,7 +96,7 @@
         <div style="margin-top: 20px;">
          {{ $users->links('pagination::simple-tailwind') }}
         </div>
-    </div>
+    </div> -->
 </body>
 
 </html>
