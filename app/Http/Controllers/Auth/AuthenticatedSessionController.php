@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         //if super admin then redirect on company listing page.
-        if (auth()->user()->role->name === 'SuperAdmin') {
+        if (auth()->user()->role->name === Role::SUPER_ADMIN) {
             return redirect()->route('company.companylistings');
         }
 

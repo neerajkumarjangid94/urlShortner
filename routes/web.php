@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,9 +19,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+
+
 //Routes.
-Route::middleware('auth')->group(function () {
-    Route::get('/companies', [CompanyController::class, 'fetchCompanyListings'])->name('company.companylistings'); //fetch all listing of companies.
+Route::middleware(['auth', 'super_admin'])->group(function () {
+
+    //company routes.    
+    Route::prefix('companies')
+        ->group(function () {
+            Route::get('/', [CompanyController::class, 'fetchCompanyListings'])->name('company.companylistings');
+            Route::get('/create', [CompanyController::class, 'create'])->name('companies.create');
+            Route::post('/', [CompanyController::class, 'store'])->name('companies.store');
+        });
+
+    //invite user route.
+    Route::get('/users/invite', [UserController::class, 'inviteUser'])->name('users.invite');
+    Route::post('/users/invite', [UserController::class, 'storeInvitation'])->name('users.invite.store');
 });
 
 require __DIR__ . '/auth.php';
