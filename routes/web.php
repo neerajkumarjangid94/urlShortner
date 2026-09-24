@@ -4,8 +4,14 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Member\MemberController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShorterUrlsController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
+
+
+require __DIR__ . '/auth.php';
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+
 
 
 
@@ -51,10 +60,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
         ->name('admin.dashboard');
- Route::get('/admin/invite-user', [AdminController::class, 'inviteUser'])
+    Route::get('/admin/invite-user', [AdminController::class, 'inviteUser'])
         ->name('admin.invite');
     Route::post('/admin/invite-user', [AdminController::class, 'sendInvitation'])
         ->name('admin.invite.send');
+
+
+        
+    Route::get('/admin/short-url/create', [AdminController::class, 'createShortUrl'])
+        ->name('admin.short-url.create');
+         // Store Short URL
+    Route::post('/admin/short-url', [AdminController::class, 'storeShortUrl'])
+        ->name('admin.short-url.store');
 });
 
 //member routes.
@@ -62,9 +79,13 @@ Route::middleware(['auth', 'member'])->group(function () {
 
     Route::get('/member/dashboard', [MemberController::class, 'dashboard'])
         ->name('member.dashboard');
+
+    //view of url form.
+    Route::get('/short-url/create', [MemberController::class, 'create'])
+        ->name('short-url.create');
+    //store shorten url.
+    Route::post('/short-url', [MemberController::class, 'store'])
+        ->name('shorturl.store');
 });
-       
-
-
-
-require __DIR__ . '/auth.php';
+Route::get('/{shortCode}', [ShorterUrlsController::class, 'redirect'])
+    ->name('short-url.redirect');

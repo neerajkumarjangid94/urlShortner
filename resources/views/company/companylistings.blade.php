@@ -6,7 +6,7 @@
 </head>
 
 <body>
-   <!-- Logout -->
+    <!-- Logout -->
     <form method="POST" action="{{ route('logout') }}" style="text-align: right; margin: 20px 70px 10px 0;">
         @csrf
 
@@ -18,18 +18,20 @@
         </button>
     </form>
 
-     <!-- Company -->
+    <!-- Company -->
     <div>
         <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
             <a href="{{ route('companies.create') }}"
                 style="padding: 8px 15px; background: lightgray; color: blue;
               text-decoration: none; font-weight: bold; border-radius: 5px;">+ Add Company</a>
-        </div>
-        <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
-            <a href="{{ route('users.invite') }}"
+
+               <a href="{{ route('users.invite') }}"
                 style="padding: 8px 15px; background: lightgray; color: blue;
               text-decoration: none; font-weight: bold; border-radius: 5px;">+ Invite User</a>
         </div>
+        <!-- <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
+           
+        </div> -->
         <h1 style="text-align: center;font-weight: bold;"><u>Companies Listing</u> </h1>
         <table border="1" cellpadding="10" style="color: black; width: 100%; border-collapse: collapse;border-color: black; margin-top: 20px;">
             <thead>
@@ -55,48 +57,132 @@
             </tbody>
         </table>
         <div style="margin-top: 20px;">
-         {{ $companies->links('pagination::simple-tailwind') }}
+            {{ $companies->links('pagination::simple-tailwind') }}
         </div>
     </div>
 
-    <!-- User -->
-     <!-- <div style="margin-top: 100px;">
-         <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;margin-right: 70px;">
-            <a href="{{ route('users.invite') }}"
-                style="padding: 8px 15px; background: lightgray; color: blue;
-              text-decoration: none; font-weight: bold; border-radius: 5px;">+ Invite User</a>
-        </div>
 
-        <h1 style="text-align: center;font-weight: bold;"><u>User Listing</u> </h1>
-        <table border="1" cellpadding="10" style="color: black; width: 100%; border-collapse: collapse;border-color: black; margin-top: 20px;">
+    <div style="margin-top: 50px;">
+        <h1 style="text-align: center; font-weight: bold;">
+            <u>All Short URLs</u>
+        </h1>
+        <form method="GET"
+            action="{{ route('company.companylistings') }}"
+            style="text-align: center; margin: 25px 0;">
+
+            <input
+                type="text"
+                name="company"
+                value="{{ request('company') }}"
+                placeholder="Search company name"
+                style="width: 300px; padding: 10px;">
+
+            <button type="submit"
+                style="padding: 10px 20px; margin-left: 5px;">
+                Search
+            </button>
+
+            @if(request('company'))
+
+            <a href="{{ route('company.companylistings') }}"
+                style="margin-left: 10px;">
+                Clear
+            </a>
+
+            @endif
+
+        </form>
+        <table border="1" cellpadding="10"
+            style="color: black; width: 100%; border-collapse: collapse;
+            border-color: black; margin-top: 20px;">
+
             <thead>
+
                 <tr>
-                    <th>User Name</th>
-                    <th>Role</th>
+
+                    <th>#</th>
+
+                    <th>Company Name</th>
+
+                    <th>Created By</th>
+
+                    <th>Original URL</th>
+
+                    <th>Short URL</th>
+
                     <th>Created At</th>
+
                 </tr>
+
             </thead>
 
+
             <tbody>
-                @forelse($users as $user)
+
+                @forelse($shortUrls as $shortUrl)
+
                 <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->role?->name }}</td>
-                    <td>{{ $user->created_at }}</td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="3" style="text-align: center;">
-                        No users found.
+
+                    <td>
+                        {{ $shortUrls->firstItem() + $loop->index }}
                     </td>
+
+                    <td>
+                        {{ $shortUrl->company->name }}
+                    </td>
+
+                    <td>
+                        {{ $shortUrl->user->name }}
+                    </td>
+
+                    <td>
+                        {{ $shortUrl->original_url }}
+                    </td>
+
+                    <td>
+
+                        <a href="{{ route('short-url.redirect', $shortUrl->short_code) }}"
+                            target="_blank">
+
+                            {{ url($shortUrl->short_code) }}
+
+                        </a>
+
+                    </td>
+
+                    <td>
+                        {{ $shortUrl->created_at }}
+                    </td>
+
                 </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="6"
+                        style="text-align: center;">
+
+                        No short URLs found.
+
+                    </td>
+
+                </tr>
+
                 @endforelse
+
             </tbody>
+
         </table>
         <div style="margin-top: 20px;">
-         {{ $users->links('pagination::simple-tailwind') }}
+
+            {{ $shortUrls->links('pagination::simple-tailwind') }}
+
         </div>
-    </div> -->
+
+    </div>
+
+
 </body>
 
 </html>

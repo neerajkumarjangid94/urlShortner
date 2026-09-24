@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendInvitationMail;
 use App\Models\CompanyUser;
 use App\Models\Role;
+use App\Models\ShortUrls;
 use App\Models\User;
 use App\Models\UserInvitations;
 use Illuminate\Http\Request;
@@ -36,19 +37,30 @@ class AdminController extends Controller
     //admin dashboard.
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $companyUser = CompanyUser::where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $shortUrls = ShortUrls::where('company_id', $companyUser->company_id)
+            ->latest()
+            ->paginate(10);
+        return view('admin.dashboard', compact('shortUrls'));
     }
 
     //invite user page view.
     public function inviteUser()
     {
-           $roles = Role::whereIn('name', ['Admin', 'Member'])->get();
+        $roles = Role::whereIn('name', ['Admin', 'Member'])->get();
         return view('admin.inviteuser', compact('roles'));
+    }
+
+    public function createShortUrl()
+    {
+        return view('admin.create-short-url');
     }
 
     public function sendInvitation(Request $request)
     {
-        
+
         $request->validate([
             'email' => ['required', 'email'],
             'role_id' => ['required', 'exists:roles,id'],
@@ -86,5 +98,26 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.invite')
             ->with('success', 'Invitation sent successfully.');
+    }
+
+    public function storeShortUrl(Request $request)
+    {
+        $request->validate([
+            'url' => ['required', 'url'],
+        ]);
+
+        $companyUser = CompanyUser::where('user_id', auth()->id())
+            ->firstOrFail();
+
+        ShortUrls::create([
+            'company_id' => $companyUser->company_id,
+            'user_id' => auth()->id(),
+            'original_url' => $request->url,
+            'short_code' => Str::random(6),
+        ]);
+
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'Short URL created successfully.');
     }
 }

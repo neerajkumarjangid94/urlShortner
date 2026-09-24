@@ -74,12 +74,15 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
 
-        if ($user->role_id == Role::SUPER_ADMIN_ID) {
+        $role = CompanyUser::with('role')
+            ->where('user_id', $user->id)
+            ->first()?->role?->name;
+        if ($role === Role::ADMIN) {
             return redirect()->route('admin.dashboard');
         }
         return redirect()->route('member.dashboard');
 
-     
+
         // return redirect(route('dashboard', absolute: false));
     }
 }

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Dashboard</title>
 </head>
+
 <body>
     <div style="width: 90%; margin: 30px auto;">
         <div style="text-align: right; margin-bottom: 20px;"><!-- Logout -->
@@ -18,15 +20,15 @@
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2>Short URLs</h2>
-            <a href=""
+            <a href="{{ route('short-url.create') }}"
                 style="background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
                 + Create Short URL
             </a>
         </div>
         @if(session('success'))
-            <div style="color: green; margin: 15px 0;">
-                {{ session('success') }}
-            </div>
+        <div style="color: green; margin: 15px 0;">
+            {{ session('success') }}
+        </div>
         @endif
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <thead>
@@ -39,30 +41,40 @@
             </thead>
             <tbody>
                 @forelse($shortUrls as $shortUrl)
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 10px;">
-                            {{ $loop->iteration }}
-                        </td>
-                        <td style="border: 1px solid #ddd; padding: 10px;">
-                            {{ $shortUrl->original_url }}
-                        </td>
-                        <td style="border: 1px solid #ddd; padding: 10px;">
-                            {{ $shortUrl->short_code }}
-                        </td>
-                        <td style="border: 1px solid #ddd; padding: 10px;">
-                            {{ $shortUrl->created_at }}
-                        </td>
-                    </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+                        {{ $loop->iteration }}
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+                        {{ $shortUrl->original_url }}
+                    </td>
+
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+
+                        <a href="{{ route('short-url.redirect', $shortUrl->short_code) }}"
+                            target="_blank">
+                            {{ url($shortUrl->short_code) }}
+                        </a>
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+
+                        {{ $shortUrl->created_at }}
+                    </td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="4"
-                            style="border: 1px solid #ddd; padding: 15px; text-align: center;">
-                            No short URLs found.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="4"
+                        style="border: 1px solid #ddd; padding: 15px; text-align: center;">
+                        No short URLs found.
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 20px;">
+     {{ $shortUrls->links('pagination::simple-tailwind') }}
+</div>
     </div>
 </body>
+
 </html>
